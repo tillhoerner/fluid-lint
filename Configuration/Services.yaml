@@ -1,0 +1,13 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+  Lemming\FluidLint\:
+    resource: '../Classes/*'
+
+  Lemming\FluidLint\Command\FluidSyntaxCommand:
+    tags:
+      - name: 'console.command'
+        command: 'fluidlint:check'
+        schedulable: false
