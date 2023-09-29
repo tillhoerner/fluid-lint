@@ -3,7 +3,7 @@
 namespace Lemming\FluidLint\Parser;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
 use TYPO3Fluid\Fluid\Core\Parser\Exception;
 use TYPO3Fluid\Fluid\Core\Parser\ParsingState;
 use TYPO3Fluid\Fluid\Core\Parser\TemplateParser;
@@ -17,7 +17,8 @@ class ExposedTemplateParser extends TemplateParser
 
     public function __construct()
     {
-        $this->setRenderingContext(GeneralUtility::makeInstance(RenderingContext::class));
+        $factory = GeneralUtility::makeInstance(RenderingContextFactory::class);
+        $this->setRenderingContext($factory->create());
     }
 
     public function getUniqueViewHelpersUsed(): array
