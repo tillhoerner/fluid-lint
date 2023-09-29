@@ -35,7 +35,7 @@ class GlobUtility
      */
     public static function getRealPathFromExtensionKeyAndPath($extension, $path = '')
     {
-        $path = ExtensionManagementUtility::extPath($extension, $path);
+        $path = ExtensionManagementUtility::extPath($extension, $path ?? '');
         return realpath($path);
     }
 }
