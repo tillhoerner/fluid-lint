@@ -4,10 +4,9 @@ namespace Lemming\FluidLint\Service;
 
 use Lemming\FluidLint\Parser\ExposedTemplateParser;
 use Lemming\FluidLint\Result\FluidParserResult;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class SyntaxService implements SingletonInterface
+class SyntaxService
 {
     /**
      * Syntax checks a Fluid template file by attempting
@@ -26,7 +25,7 @@ class SyntaxService implements SingletonInterface
      */
     public function syntaxCheckFluidTemplateFile($filePathAndFilename)
     {
-        $result = GeneralUtility::makeInstance(FluidParserResult::class);
+        $result = new FluidParserResult();
         try {
             $parser = GeneralUtility::makeInstance(ExposedTemplateParser::class);
             $context = $parser->getRenderingContext();
