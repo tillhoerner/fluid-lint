@@ -18,12 +18,6 @@ class GlobUtility
             $path .= '/';
         }
         $files = GeneralUtility::getAllFilesAndFoldersInPath([], $path, $extensions);
-        $files = array_filter($files, function (string $item) {
-            return !(strpos($item, '/vendor/') || strpos($item, '/sysext/') || strpos(
-                $item,
-                '/public/'
-            ) || strpos($item, '/Tests/'));
-        });
         $files = array_map('realpath', $files);
         return array_values($files);
     }
