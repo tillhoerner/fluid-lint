@@ -23,19 +23,30 @@ class FluidSyntaxCommand extends Command
     protected function configure()
     {
         $this->setDescription('Fluid Lint: Check Fluid syntax')
-            ->setHelp('Checks the syntax validity of Fluid files (in provided extension, path, or path in extension)')
+            ->setHelp('Checks the syntax validity of Fluid files')
             ->addOption(
+                'base-dir',
+                'b',
+                InputOption::VALUE_REQUIRED,
+                'Extensions in given directory'
+            )->addOption(
                 'extension',
                 'e',
                 InputOption::VALUE_OPTIONAL,
-                'Extension key to check, if not specified will check all extensions containing Fluid templates'
+                'Extension key to check'
             )->addOption(
                 'path',
                 'p',
                 InputOption::VALUE_OPTIONAL,
                 'File or folder path (if extensionKey is included, path is relative to this extension)'
             )->addOption(
-                'extensions',
+                'regex',
+                'r',
+                InputOption::VALUE_REQUIRED,
+                'Extension key must match regular expression',
+                '.*'
+            )->addOption(
+                'file-extensions',
                 'x',
                 InputOption::VALUE_REQUIRED,
                 'If provided, this CSV list of file extensions are considered Fluid templates',
@@ -47,9 +58,11 @@ class FluidSyntaxCommand extends Command
     {
         $extension = $input->getOption('extension');
         $path = $input->getOption('path');
-        $extensions = $input->getOption('extensions');
+        $fileExtensions = $input->getOption('file-extensions');
         $verbose = (bool)$input->getOption('verbose');
+        $extensionKeyRegex = $input->getOption('regex');
+        $extensionBaseDirectory = $input->getOption('base-dir');
         $this->commandService->setOutput(new SymfonyStyle($input, $output));
-        return $this->commandService->checkFluidSyntax($extension, $path, $extensions, $verbose);
+        return $this->commandService->checkFluidSyntax($extension, $path, $fileExtensions, $verbose, $extensionKeyRegex, $extensionBaseDirectory);
     }
 }

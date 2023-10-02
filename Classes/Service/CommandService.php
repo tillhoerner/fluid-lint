@@ -3,6 +3,7 @@
 namespace Lemming\FluidLint\Service;
 
 use Lemming\FluidLint\Utility\GlobUtility;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -45,19 +46,32 @@ class CommandService implements SingletonInterface
     public function checkFluidSyntax(
         ?string $extension = null,
         ?string $path = null,
-        string $extensions = 'html,xml,txt',
-        bool $verbose = false
+        string $extensions = 'html,xml,txt,xml',
+        bool $verbose = false,
+        string $extensionKeyRegex = '.*',
+        ?string $extensionBaseDirectory = null
     ): int {
         if ($extension) {
             $path = GlobUtility::getRealPathFromExtensionKeyAndPath($extension, $path);
             $files = GlobUtility::getFilesRecursive($path, $extensions);
         } else {
-            // no extension key given, let's lint it all
             $files = [];
             $extensionInformation = $this->extensionService->gatherInformation();
+
+            $extensionKeys = [];
+            if ($extensionBaseDirectory) {
+                $extensionKeys = GlobUtility::getExtensionKeysFromPath($extensionBaseDirectory);
+            }
+
             foreach ($extensionInformation as $extensionName => $extensionInfo) {
                 // Syntax service declines linting of inactive extensions
                 if ((int)($extensionInfo['installed']) === 0 || $extensionInfo['type'] === 'System') {
+                    continue;
+                }
+                if ((bool)preg_match('/' . $extensionKeyRegex . '/', $extensionInfo['key']) === false) {
+                    continue;
+                }
+                if ($extensionKeys !== [] && !in_array($extensionInfo['key'], $extensionKeys)) {
                     continue;
                 }
                 $path = GlobUtility::getRealPathFromExtensionKeyAndPath($extensionName);
@@ -65,8 +79,13 @@ class CommandService implements SingletonInterface
             }
         }
         $files = array_values($files);
+        if ($files === []) {
+            $this->output->info('No files found');
+            return 0;
+        }
+        $progressBar = new ProgressBar($this->output, count($files));
+        $progressBar->start();
         $errors = false;
-        $this->output->writeln('Performing a syntax check on fluid templates (types: ' . $extensions . '; path: ' . $path . ')');
 
         foreach ($files as $filePathAndFilename) {
             $basePath = str_replace(Environment::getProjectPath(), '', $filePathAndFilename);
@@ -97,6 +116,7 @@ class CommandService implements SingletonInterface
                     $this->output->warning($lines);
                 }
             }
+            $progressBar->advance();
         }
         return $this->stop($files, $errors, $verbose);
     }
@@ -106,9 +126,9 @@ class CommandService implements SingletonInterface
         $code = (int)$errors;
         if ($verbose === true) {
             if ($errors === false) {
-                $this->output->write('No errors encountered - ' . count($files) . ' file(s) are all okay' . PHP_EOL);
+                $this->output->info('No errors encountered - ' . count($files) . ' file(s) are all okay' . PHP_EOL);
             } else {
-                $this->output->write('Errors were detected - review the summary above' . PHP_EOL);
+                $this->output->error('Errors were detected - review the summary above' . PHP_EOL);
             }
         }
 

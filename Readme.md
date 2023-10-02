@@ -11,27 +11,40 @@ composer req --dev christophlehmann/fluid-lint
 ## Usage
 
 ```shell
-typo3/sysext/core/bin/typo3 fluidlint:check --extension=site_extension
+# Check a single TYPO3 Extension
+composer exec typo3 -- fluidlint:check -e site_extension
+
+# Check all TYPO3 Extensions in a directory
+composer exec typo3 -- fluidlint:check -b local_packages/
 ```
 
-The command outputs errors and warnings. When errors occur, then it exits with exit code 1.
+Without any options all templates in all non-system extensions are checked. 
 
-When you run the command without options, then all templates in all non-system extensions are checked.
+With `-vvv` you get more details about the templates.
 
-In verbose mode you get more details about the templates.
+### All options
+
+```shell
+composer exec typo3 -- help fluidlint:check
+
+Description:
+  Fluid Lint: Check Fluid syntax
+
+Usage:
+  fluidlint:check [options]
+
+Options:
+  -b, --base-dir=BASE-DIR                Extensions in given directory
+  -e, --extension[=EXTENSION]            Extension key to check
+  -p, --path[=PATH]                      File or folder path (if extensionKey is included, path is relative to this extension)
+  -r, --regex=REGEX                      Extension key must match regular expression [default: ".*"]
+  -x, --file-extensions=FILE-EXTENSIONS  If provided, this CSV list of file extensions are considered Fluid templates [default: "html,xml,txt"]
+  -v|vv|vvv, --verbose                   Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+```
 
 ## Limitations
 
 It does not verify the types of ViewHelper arguments since arguments are not used.
-
-### Options
-
-```shell
-  -e, --extension[=EXTENSION]    Extension key to check, if not specified will check all extensions containing Fluid templates
-  -p, --path[=PATH]              File or folder path (if extensionKey is included, path is relative to this extension)
-  -x, --extensions[=EXTENSIONS]  If provided, this CSV list of file extensions are considered Fluid templates [default: "html,xml,txt"]
-  -v|vv|vvv, --verbose           Verbose output
-```
 
 ## Credits
 

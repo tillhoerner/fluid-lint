@@ -32,4 +32,13 @@ class GlobUtility
         $path = ExtensionManagementUtility::extPath($extension, $path ?? '');
         return realpath($path);
     }
+
+    public static function getExtensionKeysFromPath($path)
+    {
+        $extensionDirectories = GeneralUtility::get_dirs($path);
+        return array_map(function($dir) use ($path) {
+            $composerJson = json_decode(file_get_contents($path . '/' . $dir . '/composer.json'), true);
+            return $composerJson['extra']['typo3/cms']['extension-key'];
+        }, $extensionDirectories);
+    }
 }
