@@ -6,6 +6,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
 use TYPO3Fluid\Fluid\Core\Parser\Exception;
 use TYPO3Fluid\Fluid\Core\Parser\ParsingState;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\NodeInterface;
 use TYPO3Fluid\Fluid\Core\Parser\TemplateParser;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
@@ -47,7 +48,7 @@ class ExposedTemplateParser extends TemplateParser
      * @return ParsingState Parsed template
      * @throws Exception
      */
-    public function parse($templateString, $templateIdentifier = null)
+    public function parse($templateString, $templateIdentifier = null): ParsingState
     {
         if (!is_string($templateString)) {
             throw new Exception(
@@ -79,7 +80,7 @@ class ExposedTemplateParser extends TemplateParser
         $namespaceIdentifier,
         $methodIdentifier,
         $argumentsObjectTree
-    ) {
+    ): ?NodeInterface {
         $this->viewHelpersUsed[] = [
             'namespace' => $namespaceIdentifier,
             'viewhelper' => $methodIdentifier,
@@ -100,7 +101,7 @@ class ExposedTemplateParser extends TemplateParser
      * @return ParsingState
      * @throws Exception
      */
-    public function buildObjectTree(array $splitTemplate, $context)
+    public function buildObjectTree(array $splitTemplate, $context): ParsingState
     {
         return parent::buildObjectTree($splitTemplate, $context);
     }
