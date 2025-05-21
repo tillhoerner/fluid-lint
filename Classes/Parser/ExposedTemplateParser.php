@@ -92,17 +92,4 @@ class ExposedTemplateParser extends TemplateParser
             $argumentsObjectTree
         );
     }
-
-    /**
-     * Build object tree from the split template
-     *
-     * @param array $splitTemplate The split template, so that every tag with a namespace declaration is already a seperate array element.
-     * @param int $context one of the CONTEXT_* constants, defining whether we are inside or outside of ViewHelper arguments currently.
-     * @return ParsingState
-     * @throws Exception
-     */
-    public function buildObjectTree(array $splitTemplate, $context): ParsingState
-    {
-        return parent::buildObjectTree($splitTemplate, $context);
-    }
 }
