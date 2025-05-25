@@ -31,7 +31,7 @@ class SyntaxService
             $context = $parser->getRenderingContext();
             $parsedTemplate = $parser->parse(file_get_contents($filePathAndFilename));
             if ($parsedTemplate->hasLayout()) {
-                $result->setLayoutName($parsedTemplate->getLayoutName($context));
+                $result->setLayoutName($parsedTemplate->getLayoutName($context) ?? '');
             }
             $result->setNamespaces($context->getViewHelperResolver()->getNamespaces());
             $result->setCompilable($parsedTemplate->isCompilable());

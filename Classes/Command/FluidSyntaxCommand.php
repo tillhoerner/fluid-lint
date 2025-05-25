@@ -38,7 +38,8 @@ class FluidSyntaxCommand extends Command
                 'path',
                 'p',
                 InputOption::VALUE_OPTIONAL,
-                'File or folder path (if extensionKey is included, path is relative to this extension)'
+                'File or folder path (if extensionKey is included, path is relative to this extension)',
+                ''
             )->addOption(
                 'regex',
                 'r',
