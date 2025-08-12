@@ -62,7 +62,7 @@ class ExposedTemplateParser extends TemplateParser
             $templateString = $this->preProcessTemplateSource($templateString);
 
             $splitTemplate = $this->splitTemplate = $this->splitTemplateAtDynamicTags($templateString);
-            $parsingState = $this->buildObjectTree($splitTemplate, self::CONTEXT_OUTSIDE_VIEWHELPER_ARGUMENTS);
+            $parsingState = $this->buildObjectTree($this->createParsingState($templateIdentifier), $splitTemplate, self::CONTEXT_OUTSIDE_VIEWHELPER_ARGUMENTS);
         } catch (Exception $error) {
             throw $this->createParsingRelatedExceptionWithContext($error, $templateIdentifier);
         }
